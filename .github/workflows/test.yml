@@ -28,10 +28,10 @@ jobs:
           key: acton-${{ github.run_id }}
           restore-keys: |
             acton
-      - run: acton build
       - name: "Start notconf in background"
         run: |
           docker run -td --name notconf --publish 42830:830 ghcr.io/notconf/notconf
+      - run: acton build
       - run: acton test
       - name: "Test ncurl list-schemas"
         run: ./ncurl list-schemas
