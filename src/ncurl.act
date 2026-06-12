@@ -8,17 +8,17 @@ transports), and then we'll be network curl.
 
 import argparse
 import file
-import fixups
+import netconf.fixups as fixups
 import logging
 import netconf
-import process
+import net
 import time
-import xml
+import std.xml as xml
 
 
 import yang
-import yang.data
-import yang.xml
+import yang.data as ydata
+import yang.xml as yxml
 import schema_filter
 
 
@@ -220,7 +220,7 @@ actor CmdListSchemas(env, args, log_handler):
         print("\nTotal schemas: {count}")
         env.exit(0)
 
-    c = netconf.Client(process.ProcessCap(env.auth),
+    c = netconf.Client(net.TCPConnectCap(net.TCPCap(net.NetCap(env.auth))),
                       on_connect=_on_connect,
                       on_notif=None,
                       address=host,
@@ -258,7 +258,7 @@ actor CmdHello(env, args, log_handler):
 
             c.close(_close_cb)
 
-    netconf.Client(process.ProcessCap(env.auth),
+    netconf.Client(net.TCPConnectCap(net.TCPCap(net.NetCap(env.auth))),
                    on_connect=_on_connect,
                    on_notif=None,
                    address=host,
@@ -466,7 +466,7 @@ actor CmdGetData(env, args, log_handler, use_get_config: bool):
         t0.reset()
         c = config_xml
         if c is not None:
-            gdata = yang.xml.from_xml(root, c, loose=True)
+            gdata = yxml.from_xml(root, c, loose=True)
             print("Parsed config to gdata in {t0.elapsed().to_float()}s")
 
             if format == "json":
@@ -476,7 +476,7 @@ actor CmdGetData(env, args, log_handler, use_get_config: bool):
                 _output_data(gdata.prsrc())
                 return
             elif format == "acton-adata":
-                _output_data(yang.data.pradata(root, gdata, loose=True))
+                _output_data(ydata.pradata(root, gdata, loose=True))
                 return
             elif format == "xml":
                 _output_data(gdata.to_xmlstr())
@@ -514,7 +514,7 @@ actor CmdGetData(env, args, log_handler, use_get_config: bool):
         else:
             env.exit(0)
 
-    client = netconf.Client(process.ProcessCap(env.auth),
+    client = netconf.Client(net.TCPConnectCap(net.TCPCap(net.NetCap(env.auth))),
                       on_connect=_on_connect,
                       on_notif=None,
                       address=host,
@@ -570,7 +570,7 @@ actor CmdEditConfig(env, args, log_handler):
             stdin_buffer.append(input)
 
     def _connect_and_edit():
-        netconf.Client(process.ProcessCap(env.auth),
+        netconf.Client(net.TCPConnectCap(net.TCPCap(net.NetCap(env.auth))),
                           on_connect=_on_connect,
                           on_notif=None,
                           address=host,
@@ -703,7 +703,7 @@ actor CmdRpc(env, args, log_handler):
         _emit_reply(unwrap(result, "Expected rpc-reply").encode(), 1 if error is not None else 0, error)
 
     def _connect_and_send():
-        netconf.Client(process.ProcessCap(env.auth),
+        netconf.Client(net.TCPConnectCap(net.TCPCap(net.NetCap(env.auth))),
                        on_connect=_on_connect,
                        on_notif=None,
                        address=host,
@@ -774,7 +774,7 @@ actor CmdCommit(env, args, log_handler):
 
         c.close(_close_cb)
 
-    netconf.Client(process.ProcessCap(env.auth),
+    netconf.Client(net.TCPConnectCap(net.TCPCap(net.NetCap(env.auth))),
                       on_connect=_on_connect,
                       on_notif=None,
                       address=host,
@@ -816,7 +816,7 @@ actor CmdDiscardChanges(env, args, log_handler):
 
         c.close(_close_cb)
 
-    netconf.Client(process.ProcessCap(env.auth),
+    netconf.Client(net.TCPConnectCap(net.TCPCap(net.NetCap(env.auth))),
                       on_connect=_on_connect,
                       on_notif=None,
                       address=host,
@@ -947,7 +947,7 @@ actor CmdGetSchema(env, args, log_handler):
             env.exit(0)
 
     # Connect and start the download process
-    client = netconf.Client(process.ProcessCap(env.auth),
+    client = netconf.Client(net.TCPConnectCap(net.TCPCap(net.NetCap(env.auth))),
                   on_connect=_on_connect,
                   on_notif=None,
                   address=host,
