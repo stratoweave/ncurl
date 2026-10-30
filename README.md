@@ -1,6 +1,12 @@
 # ncurl - NETCONF URL Tool
 [![REUSE Compliance Check](https://github.com/stratoweave/ncurl/actions/workflows/reuse-compliance.yml/badge.svg)](https://github.com/stratoweave/ncurl/actions/workflows/reuse-compliance.yml)
 
+> [!IMPORTANT]
+> This repository is archived. ncurl has moved to the
+> [stratoweave](https://github.com/stratoweave/stratoweave) monorepo, where it
+> lives in [`src/ncurl.act`](https://github.com/stratoweave/stratoweave/blob/main/src/ncurl.act).
+> Open issues and pull requests there.
+
 A command-line utility for interacting with NETCONF devices, like curl but for NETCONF. Written in [Acton](https://www.acton-lang.org/), ncurl provides a simple interface for common NETCONF operations.
 
 ## Features
